@@ -3,7 +3,6 @@ package br.helis.architecture.service;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.helis.architecture.exceptions.ProductNotFoundException;
@@ -16,7 +15,6 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
-    @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }

@@ -3,7 +3,6 @@ package br.helis.architecture.api;
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ public class ProductResource {
 
     private ProductServiceImpl productService;
 
-    @Autowired
     public ProductResource(ProductServiceImpl productService) {
         this.productService = productService;
     }
