@@ -71,7 +71,11 @@ public class Product {
     }
 
     public String getCategoryName() {
-       return category.getName();
+        if (category == null) {
+            return "Unknown";
+        }  else  {
+            return category.getName();
+        }
     }
 
 }
