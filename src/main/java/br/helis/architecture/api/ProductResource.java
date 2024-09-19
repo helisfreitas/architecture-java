@@ -13,6 +13,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.helis.architecture.exceptions.ProductNotFoundException;
 import br.helis.architecture.model.Product;
 import br.helis.architecture.service.ProductServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RequestMapping("/products")
 @RestController
+@Tag(name = "Product API", description = "Operations related to products")
 public class ProductResource {
 
     private ProductServiceImpl productService;
@@ -30,13 +36,22 @@ public class ProductResource {
     }
 
     @GetMapping
+    @Operation(summary = "Find all product", description = "Returns all products")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved"), 
+    })
     public ResponseEntity<List<Product>> get() {
         List<Product> result = productService.findAll();
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Find product by ID", description = "Returns a product given its ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved"), 
+        @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
+    public ResponseEntity<Product> get(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id) {
         try {
             Product product = productService.findById(id);
             return ResponseEntity.ok(product);
@@ -45,6 +60,10 @@ public class ProductResource {
         }
     }
 
+    @Operation(summary = "Create a new product", description = "Create a new product")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Successfully created"), 
+    })
     @PostMapping
     public ResponseEntity<Void> post(@RequestBody Product product) {
         productService.save(product);
@@ -55,9 +74,14 @@ public class ProductResource {
                         .toUri();
         return ResponseEntity.created(location).build();
     }
-
+    
+    @Operation(summary = "Update a existent product", description = "Update a existent product")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Successfully updated"), 
+        @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<Void> put(@PathVariable Long id, @RequestBody Product entity) {
+    public ResponseEntity<Void> put(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id, @RequestBody Product entity) {
         try {
             if (id.equals(entity.getId())) {
                 throw new IllegalArgumentException("id conflicts with product id body");
@@ -71,8 +95,13 @@ public class ProductResource {
         }
     }
 
+    @Operation(summary = "Delete existent product", description = "Delete a existent product")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Successfully deleted"), 
+        @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id) {
         try {
             productService.deleteById(id);
             return ResponseEntity.noContent().build();
