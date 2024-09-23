@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -64,6 +66,7 @@ public class Product implements Serializable {
         }
     }
 
+    @JsonIgnore
     public String getCategoryName() {
         if (category == null) {
             return null;

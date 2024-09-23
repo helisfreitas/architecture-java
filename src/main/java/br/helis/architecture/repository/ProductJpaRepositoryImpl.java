@@ -12,7 +12,6 @@ import jakarta.persistence.PersistenceContext;
 @Repository
 public class ProductJpaRepositoryImpl implements ProductRepository {
  
-
     @PersistenceContext
     private EntityManager entityManager;
     
