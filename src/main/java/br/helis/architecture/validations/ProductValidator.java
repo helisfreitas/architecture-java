@@ -2,36 +2,22 @@ package br.helis.architecture.validations;
 
 import java.math.BigDecimal;
 
+import br.com.fluentvalidator.AbstractValidator;
+import static br.com.fluentvalidator.predicate.ComparablePredicate.*;
 import br.helis.architecture.model.Product;
 
-public class ProductValidator implements Validator {
-    
-    private Product product;
-
-    public ProductValidator(Product product) {
-        this.product = product;
-    }
+public class ProductValidator extends AbstractValidator<Product> {    
+  
 
     @Override
-    public boolean isValid() {
-
-        if (product == null) {
-            throw new IllegalArgumentException("Product cannot be null");
-        }
-
-        if (product.getName() == null || product.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Product name must not be null or empty");
-        }
-
-        if(product.getCategory() == null) {
-            throw new IllegalArgumentException("Product category cannot be null");
-        }
-
-        if(product.getPrice() == null  || product.getPrice().compareTo(BigDecimal.ZERO) < 0) {  
-            throw new IllegalArgumentException("Product price cannot be zero or negative");
-        }
-        
-        return true;
+    public void rules() {
+        ruleFor(Product::getPrice)
+        .must(greaterThan(BigDecimal.ZERO))
+        .withMessage("age must be greater than to 0")  
+        .withFieldName("price")     
+        .must(lessThanOrEqual(new BigDecimal("100")))
+        .withMessage("age must be less than or equal to 100")
+        .withFieldName("price");
     }
     
 }

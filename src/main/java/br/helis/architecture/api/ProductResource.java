@@ -1,6 +1,7 @@
 package br.helis.architecture.api;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.fluentvalidator.context.Error;
+import br.com.fluentvalidator.context.ValidationResult;
 import br.helis.architecture.exceptions.ProductNotFoundException;
 import br.helis.architecture.model.Product;
 import br.helis.architecture.service.ProductServiceImpl;
+import br.helis.architecture.validations.ProductValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +40,7 @@ public class ProductResource {
     }
 
     @GetMapping
-    @Operation(summary = "Find all product", description = "Returns all products")
+    @Operation(summary = "Find all products", description = "Returns all products")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved"), 
     })
@@ -65,7 +69,11 @@ public class ProductResource {
         @ApiResponse(responseCode = "204", description = "Successfully created"), 
     })
     @PostMapping
-    public ResponseEntity<Void> post(@RequestBody Product product) {
+    public ResponseEntity<Collection<Error>> post(@RequestBody Product product){
+        ValidationResult result = new ProductValidator().validate(product);
+        if(!result.isValid()) {
+            return ResponseEntity.badRequest().body(result.getErrors());
+        }
         productService.save(product);
         URI location = ServletUriComponentsBuilder
                         .fromCurrentRequest()
@@ -75,7 +83,7 @@ public class ProductResource {
         return ResponseEntity.created(location).build();
     }
     
-    @Operation(summary = "Update a existent product", description = "Update a existent product")
+    @Operation(summary = "Update an existing product", description = "Update an existing product")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully updated"), 
         @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
@@ -95,7 +103,7 @@ public class ProductResource {
         }
     }
 
-    @Operation(summary = "Delete existent product", description = "Delete a existent product")
+    @Operation(summary = "Delete an existing product", description = "Delete an existing product")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully deleted"), 
         @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
