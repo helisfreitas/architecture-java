@@ -1,6 +1,7 @@
 package br.helis.architecture.model;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -9,10 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,29 +17,26 @@ import lombok.Setter;
 @Entity
 @Setter @Getter
 @NoArgsConstructor
-public class Product {
+public class Product implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
     private String name;
 
     @Enumerated
     private Category category;
     
-    @Positive
-    @Digits(integer= 12, fraction=2)
     private BigDecimal price;
 
     @Getter
     private int stock;
 
-    @PastOrPresent
     private LocalDate createAt;
     
-    @PastOrPresent
     private LocalDate updateAt;
 
     public Product(Long id, String name, Category  category, BigDecimal price) {
@@ -72,7 +66,7 @@ public class Product {
 
     public String getCategoryName() {
         if (category == null) {
-            return "Unknown";
+            return null;
         }  else  {
             return category.getName();
         }

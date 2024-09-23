@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.helis.architecture.exceptions.ProductNotFoundException;
 import br.helis.architecture.model.Product;
 import br.helis.architecture.repository.ProductRepository;
-import br.helis.architecture.validations.ProductValidator;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -26,18 +26,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void save(Product product) {
-        new ProductValidator(product).isValid();
-        productRepository.save(product);
+    @Transactional
+    public void save(Product product) {  
+        productRepository.save(product);     
     }
 
     @Override
+    @Transactional
     public void update(Product product) throws ProductNotFoundException {
         if(Objects.nonNull(findById(product.getId()))) {
             productRepository.update(product);
         }
     }
-
 
     @Override
     public void deleteById(Long id) throws ProductNotFoundException {
