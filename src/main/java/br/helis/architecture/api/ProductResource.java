@@ -3,6 +3,8 @@ package br.helis.architecture.api;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.fluentvalidator.context.Error;
 import br.com.fluentvalidator.context.ValidationResult;
+import br.helis.architecture.api.model.ProductRequest;
+import br.helis.architecture.api.model.ProductResponse;
 import br.helis.architecture.exceptions.ProductNotFoundException;
 import br.helis.architecture.model.Product;
 import br.helis.architecture.service.ProductServiceImpl;
@@ -44,8 +48,8 @@ public class ProductResource {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved"), 
     })
-    public ResponseEntity<List<Product>> get() {
-        List<Product> result = productService.findAll();
+    public ResponseEntity<List<ProductResponse>> get() {
+        List<ProductResponse> result = productService.findAll().stream().map(ProductResponse::fromModel).collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 
@@ -55,9 +59,9 @@ public class ProductResource {
         @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id) {
+    public ResponseEntity<ProductResponse> get(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id) {
         try {
-            Product product = productService.findById(id);
+            ProductResponse product = Optional.of(productService.findById(id)).map(ProductResponse::fromModel).get();
             return ResponseEntity.ok(product);
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -67,18 +71,20 @@ public class ProductResource {
     @Operation(summary = "Create a new product", description = "Create a new product")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully created"), 
+        @ApiResponse(responseCode = "400", description = "Bad Request"), 
     })
     @PostMapping
-    public ResponseEntity<Collection<Error>> post(@RequestBody Product product){
-        ValidationResult result = new ProductValidator().validate(product);
+    public ResponseEntity<Collection<Error>> post(@RequestBody ProductRequest product){
+        Product model = product.toModel();
+        ValidationResult result = new ProductValidator().validate(model);
         if(!result.isValid()) {
             return ResponseEntity.badRequest().body(result.getErrors());
         }
-        productService.save(product);
+        productService.save(model);
         URI location = ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(product.getId())
+                        .buildAndExpand(model.getId())
                         .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -86,15 +92,19 @@ public class ProductResource {
     @Operation(summary = "Update an existing product", description = "Update an existing product")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Successfully updated"), 
+        @ApiResponse(responseCode = "400", description = "Bad Request"), 
         @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Void> put(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id, @RequestBody Product entity) {
+    public ResponseEntity<Collection<Error>> put(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id, @RequestBody ProductRequest produto) {
         try {
-            if (id.equals(entity.getId())) {
-                throw new IllegalArgumentException("id conflicts with product id body");
+            Product model = produto.toModel();
+            model.setId(id);
+            ValidationResult result = new ProductValidator().validate(model);
+            if(!result.isValid()) {
+                return ResponseEntity.badRequest().body(result.getErrors());
             }
-            productService.update(entity);
+            productService.update(model);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
