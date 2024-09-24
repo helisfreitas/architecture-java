@@ -1,11 +1,8 @@
 package br.helis.architecture.model;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
