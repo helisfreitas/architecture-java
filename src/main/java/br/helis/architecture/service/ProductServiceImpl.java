@@ -30,9 +30,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Long id) throws ProductNotFoundException {
-        Product product = Optional.ofNullable(redisService.get(id.toString())).map(j -> jsonHelper.jsonToObject(j, Product.class)).get();
-        if(product != null) {
-            return product;
+        Optional<Product> product = Optional.ofNullable(redisService.get(id.toString())).map(j -> jsonHelper.jsonToObject(j, Product.class));
+        if(product.isPresent()) {
+            return product.get();
         }
         return productRepository.findById(id)
             .orElseThrow(() -> new ProductNotFoundException(id));
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void save(Product product) {  
         productRepository.save(product);     
-        redisService.save(product.getName(), jsonHelper.objectToJson(product));
+        redisService.save(product.getId().toString(), jsonHelper.objectToJson(product));
     }
 
     @Override
