@@ -1,5 +1,6 @@
 package br.helis.architecture.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void update(Product product) throws ProductNotFoundException {
         if(Objects.nonNull(findById(product.getId()))) {
+            product.setUpdateAt(LocalDate.now());
             productRepository.update(product);
         }
     }

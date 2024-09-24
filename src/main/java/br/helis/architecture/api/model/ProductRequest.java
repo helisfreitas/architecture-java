@@ -5,6 +5,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import br.helis.architecture.model.Category;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,13 +20,17 @@ public class ProductRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @NotBlank
     private String name;
 
-     private Category category;
+    @NotNull
+    private Category category;
     
+    @NotNull
+    @Positive
+    @DecimalMax(value="99999.99")
+    @Digits(integer = 15, fraction=2)
     private BigDecimal price;
-
-    private int stock;
 
     public ProductRequest(String name, Category  category, BigDecimal price) {
         this.name = name;
@@ -34,8 +43,7 @@ public class ProductRequest implements Serializable {
         model.setName(name);
         model.setCategory(category);
         model.setPrice(price);
-        model.setStock(stock);
-        return model;
+       return model;
     }
 
     public static ProductRequest fromModel(br.helis.architecture.model.Product product) {
@@ -43,7 +51,6 @@ public class ProductRequest implements Serializable {
         product2.setName(product.getName());
         product2.setCategory(product.getCategory());
         product2.setPrice(product.getPrice());
-        product2.setStock(product.getStock());
         return product2;
     }
    

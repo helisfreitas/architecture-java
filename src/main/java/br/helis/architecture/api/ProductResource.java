@@ -14,18 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.fluentvalidator.context.Error;
-import br.com.fluentvalidator.context.ValidationResult;
 import br.helis.architecture.api.model.ProductRequest;
 import br.helis.architecture.api.model.ProductResponse;
 import br.helis.architecture.exceptions.ProductNotFoundException;
 import br.helis.architecture.model.Product;
 import br.helis.architecture.service.ProductServiceImpl;
-import br.helis.architecture.validations.ProductValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,16 +69,12 @@ public class ProductResource {
 
     @Operation(summary = "Create a new product", description = "Create a new product")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Successfully created"), 
+        @ApiResponse(responseCode = "201", description = "Successfully created"), 
         @ApiResponse(responseCode = "400", description = "Bad Request"), 
     })
     @PostMapping
-    public ResponseEntity<Collection<Error>> post(@RequestBody ProductRequest product){
+    public ResponseEntity<Collection<Error>> post(@Valid @RequestBody ProductRequest product){
         Product model = product.toModel();
-        ValidationResult result = new ProductValidator().validate(model);
-        if(!result.isValid()) {
-            return ResponseEntity.badRequest().body(result.getErrors());
-        }
         productService.save(model);
         URI location = ServletUriComponentsBuilder
                         .fromCurrentRequest()
@@ -96,14 +91,10 @@ public class ProductResource {
         @ApiResponse(responseCode = "404", description = "Not found - The product was not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Collection<Error>> put(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id, @RequestBody ProductRequest produto) {
+    public ResponseEntity<Collection<Error>> put(@PathVariable @Parameter(name = "id", description = "Product id", example = "1") Long id, @Valid @RequestBody ProductRequest produto) {
         try {
             Product model = produto.toModel();
             model.setId(id);
-            ValidationResult result = new ProductValidator().validate(model);
-            if(!result.isValid()) {
-                return ResponseEntity.badRequest().body(result.getErrors());
-            }
             productService.update(model);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException e) {
