@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.helis.architecture.exceptions.ProductNotFoundException;
+import br.helis.architecture.notifications.entity.Outbox;
+import br.helis.architecture.notifications.repository.OutboxRepository;
 import br.helis.architecture.products.entity.Product;
 import br.helis.architecture.products.repository.ProductRepository;
 import br.helis.architecture.util.JsonHelper;
@@ -22,10 +24,13 @@ public class ProductServiceImpl implements ProductService {
 
     private JsonHelper jsonHelper;
 
-     public ProductServiceImpl(ProductRepository productRepository, RedisService redisService, JsonHelper jsonHelper) {
+    private OutboxRepository outboxRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository, RedisService redisService, JsonHelper jsonHelper, OutboxRepository outboxRepository) {
         this.productRepository = productRepository;
         this.redisService = redisService;
         this.jsonHelper = jsonHelper;
+        this.outboxRepository = outboxRepository;
     }
 
     @Override
@@ -42,7 +47,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void save(Product product) {  
         productRepository.save(product);     
-        redisService.save(product.getId().toString(), jsonHelper.objectToJson(product));
+        String objectToJson = jsonHelper.objectToJson(product);
+        redisService.save(product.getId().toString(), objectToJson);
+        outboxRepository.save(new Outbox(jsonHelper.objectToJson(product)));
     }
 
     @Override

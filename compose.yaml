@@ -1,5 +1,6 @@
 volumes:
   postgres-data:
+  rabbitmq_data:
 
 services:
   redis:
@@ -18,5 +19,17 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: mydatabase
+
+  rabbitmq:
+    image: rabbitmq:3-management  # Imagem RabbitMQ com o Management Plugin
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"    # Porta padrão do RabbitMQ (para conexão com aplicações)
+      - "15672:15672"  # Porta para acessar a interface de gerenciamento
+    environment:
+      RABBITMQ_DEFAULT_USER: guest   # Usuário padrão
+      RABBITMQ_DEFAULT_PASS: guest   # Senha padrão
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Persistir dados do RabbitMQ
 
   
