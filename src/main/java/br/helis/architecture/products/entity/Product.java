@@ -1,4 +1,4 @@
-package br.helis.architecture.model;
+package br.helis.architecture.products.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

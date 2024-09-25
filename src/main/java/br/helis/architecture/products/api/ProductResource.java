@@ -1,4 +1,4 @@
-package br.helis.architecture.api;
+package br.helis.architecture.products.api;
 
 import java.net.URI;
 import java.util.Collection;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.fluentvalidator.context.Error;
-import br.helis.architecture.api.model.ProductRequest;
-import br.helis.architecture.api.model.ProductResponse;
 import br.helis.architecture.exceptions.ProductNotFoundException;
-import br.helis.architecture.model.Product;
-import br.helis.architecture.service.ProductServiceImpl;
+import br.helis.architecture.products.api.model.ProductRequest;
+import br.helis.architecture.products.api.model.ProductResponse;
+import br.helis.architecture.products.entity.Product;
+import br.helis.architecture.products.service.ProductServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

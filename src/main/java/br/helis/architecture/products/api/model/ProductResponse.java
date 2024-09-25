@@ -1,11 +1,11 @@
-package br.helis.architecture.api.model;
+package br.helis.architecture.products.api.model;
 
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.helis.architecture.model.Category;
+import br.helis.architecture.products.entity.Category;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,8 +43,8 @@ public class ProductResponse implements Serializable {
         this(null, name, category, price);
     }
 
-    public br.helis.architecture.model.Product toModel() {
-        br.helis.architecture.model.Product model = new br.helis.architecture.model.Product();
+    public br.helis.architecture.products.entity.Product toModel() {
+        br.helis.architecture.products.entity.Product model = new br.helis.architecture.products.entity.Product();
         model.setId(id);
         model.setName(name);
         model.setCategory(category);
@@ -55,7 +55,7 @@ public class ProductResponse implements Serializable {
         return model;
     }
 
-    public static ProductResponse fromModel(br.helis.architecture.model.Product product) {
+    public static ProductResponse fromModel(br.helis.architecture.products.entity.Product product) {
         ProductResponse product2 = new ProductResponse();
         product2.setId(product.getId());
         product2.setName(product.getName());

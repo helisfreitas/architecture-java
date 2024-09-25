@@ -1,4 +1,4 @@
-package br.helis.architecture.model;
+package br.helis.architecture.products.entity;
 
 import lombok.Getter;
 

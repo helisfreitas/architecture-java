@@ -1,10 +1,10 @@
-package br.helis.architecture.api.model;
+package br.helis.architecture.products.api.model;
 
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import br.helis.architecture.model.Category;
+import br.helis.architecture.products.entity.Category;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -38,15 +38,15 @@ public class ProductRequest implements Serializable {
         this.price = price;   
     }
 
-    public br.helis.architecture.model.Product toModel() {
-        br.helis.architecture.model.Product model = new br.helis.architecture.model.Product();
+    public br.helis.architecture.products.entity.Product toModel() {
+        br.helis.architecture.products.entity.Product model = new br.helis.architecture.products.entity.Product();
         model.setName(name);
         model.setCategory(category);
         model.setPrice(price);
        return model;
     }
 
-    public static ProductRequest fromModel(br.helis.architecture.model.Product product) {
+    public static ProductRequest fromModel(br.helis.architecture.products.entity.Product product) {
         ProductRequest product2 = new ProductRequest();
         product2.setName(product.getName());
         product2.setCategory(product.getCategory());

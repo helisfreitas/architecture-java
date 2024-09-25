@@ -1,4 +1,4 @@
-package br.helis.architecture.service;
+package br.helis.architecture.products.service;
 
 import java.time.Duration;
 

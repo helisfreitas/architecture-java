@@ -1,9 +1,9 @@
-package br.helis.architecture.repository;
+package br.helis.architecture.products.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import br.helis.architecture.model.Product;
+import br.helis.architecture.products.entity.Product;
 
 
 public interface ProductRepository {

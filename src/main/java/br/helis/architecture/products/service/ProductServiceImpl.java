@@ -1,4 +1,4 @@
-package br.helis.architecture.service;
+package br.helis.architecture.products.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.helis.architecture.exceptions.ProductNotFoundException;
-import br.helis.architecture.model.Product;
-import br.helis.architecture.repository.ProductRepository;
+import br.helis.architecture.products.entity.Product;
+import br.helis.architecture.products.repository.ProductRepository;
 import br.helis.architecture.util.JsonHelper;
 
 @Service
