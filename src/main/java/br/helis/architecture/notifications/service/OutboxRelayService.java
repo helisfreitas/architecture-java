@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.amqp.AmqpConnectException;
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -25,7 +24,6 @@ public class OutboxRelayService {
         this.outboxRepository = outboxRepository;
         this.rabbitTemplate = rabbitTemplate;
     }
-
     
     @Retryable(
         retryFor = { AmqpConnectException.class }, 
